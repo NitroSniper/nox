@@ -62,15 +62,5 @@
           ];
         };
       }
-      // {
-        templates = {
-          default = null;
-
-          rust = {
-            path = ./rust;
-            description = "Rust Environment";
-          };
-        };
-      }
     );
 }

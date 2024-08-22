@@ -1,3 +1,5 @@
+use std::{os::unix::process::CommandExt, process::Command};
+
 use clap::{Parser, Subcommand, ValueEnum};
 
 /// A Nix tool to quickstart development and packaging applications
@@ -11,10 +13,11 @@ struct Args {
 #[derive(Subcommand)]
 enum Commands {
     /// Enter a development shell of chosen language
-    Enter {
+    #[command(arg_required_else_help = true)]
+    Develop {
         /// Language to be chosen
         #[arg(value_enum)]
-        lang: Language,
+        language: Language,
     },
 }
 
@@ -27,8 +30,8 @@ fn main() {
     let args = Args::parse();
 
     match args.command {
-        Commands::Enter { lang } => {
-            println!("You suck at {:?}", lang);
+        Commands::Develop { language } => {
+            Command::new("nix develop").args([""]).exec();
         }
     }
 }
