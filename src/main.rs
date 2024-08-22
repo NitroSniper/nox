@@ -21,6 +21,7 @@ enum NoxCommands {
     },
 
     /// Initialise Current Directory with template
+    #[command(arg_required_else_help = true)]
     Init {
         /// Language to be chosen
         #[arg(value_enum)]
@@ -69,7 +70,7 @@ fn main() {
         }
         NoxCommands::Init { language } => {
             Command::new("nix")
-                .arg("flake init -t")
+                .args(["flake", "init", "--template"])
                 .arg(language.get_flake_template())
                 .spawn()
                 .expect("Command to execute")
