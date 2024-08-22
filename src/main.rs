@@ -24,12 +24,20 @@ enum NoxCommands {
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
 enum Language {
     Rust,
+    Python,
+    // Nix,
+    // Go,
+    // Lua,
+    // C,
+    // #[clap(name = "c++")]
+    // CPlusPlus,
 }
 
 impl Language {
     fn get_github_flake(&self) -> String {
         let lang = match self {
             Language::Rust => "rust",
+            Language::Python => "python",
         };
         format!("github:NitroSniper/nox?dir={}", lang)
     }
