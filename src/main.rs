@@ -19,6 +19,13 @@ enum NoxCommands {
         #[arg(value_enum)]
         language: Language,
     },
+
+    /// Initialise Current Directory with template
+    Init {
+        /// Language to be chosen
+        #[arg(value_enum)]
+        language: Language,
+    },
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
@@ -34,12 +41,17 @@ enum Language {
 }
 
 impl Language {
-    fn get_github_flake(&self) -> String {
-        let lang = match self {
+    fn get_name<'a>(&'a self) -> &'a str {
+        match self {
             Language::Rust => "rust",
             Language::Python => "python",
-        };
-        format!("github:NitroSniper/nox?dir={}", lang)
+        }
+    }
+    fn get_flake(&self) -> String {
+        format!("github:NitroSniper/nox?dir={}", self.get_name())
+    }
+    fn get_flake_template(&self) -> String {
+        format!("github:NitroSniper/nox#{}", self.get_name())
     }
 }
 
@@ -50,10 +62,19 @@ fn main() {
         NoxCommands::Develop { language } => {
             Command::new("nix")
                 .arg("develop")
-                .arg(language.get_github_flake())
+                .arg(language.get_flake())
                 // No lock file since this is just a development shell
                 .arg("--no-write-lock-file")
                 .exec();
+        }
+        NoxCommands::Init { language } => {
+            Command::new("nix")
+                .arg("flake init -t")
+                .arg(language.get_flake_template())
+                .spawn()
+                .expect("Command to execute")
+                .wait()
+                .expect("Command to complete");
         }
     }
 }
