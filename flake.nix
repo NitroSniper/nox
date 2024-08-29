@@ -37,9 +37,6 @@
         commonArgs = {
           src = craneLib.cleanCargoSource ./.;
           strictDeps = true;
-
-          # Additional environment variables can be set directly
-          # MY_CUSTOM_VAR = "some value";
         };
 
         # Build *just* the cargo dependencies, so we can reuse
