@@ -28,6 +28,12 @@
           inherit system;
           overlays = [ (import inputs.rust-overlay) ];
         };
+
+        utilities = with pkgs; [
+          rust-analyzer
+          bacon
+        ];
+
         # Tell Crane to use our toolchain
         craneLib = (inputs.crane.mkLib pkgs).overrideToolchain (
           p: p.rust-bin.nightly.latest.default.override { }
@@ -46,21 +52,24 @@
         # all of that work (e.g. via cachix) when running in CI
 
         cargoArtifacts = craneLib.buildDepsOnly commonArgs;
-
-        # Build the binary itself, reusing the dependency
-        # artifacts from above.
-        bin = craneLib.buildPackage (commonArgs // { inherit cargoArtifacts; });
       in
       {
         packages = {
-          default = bin;
+          # Build the binary itself, reusing the dependency
+          # artifacts from above.
+          default = craneLib.buildPackage (commonArgs // { inherit cargoArtifacts; });
         };
-        devShells.default = craneLib.devShell {
-          packages = with pkgs; [
-            rust-analyzer
-            bacon
-          ];
-        };
+        devShells =
+          let
+            util = pkgs.mkShell { packages = utilities; };
+            battery = craneLib.devShell { packages = utilities; };
+            chain = craneLib.devShell { };
+          in
+          {
+            inherit battery chain util;
+            default = chain;
+          };
+
       }
     );
 }
