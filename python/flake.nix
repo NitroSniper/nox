@@ -13,15 +13,23 @@
       let
         # https://wiki.nixos.org/wiki/Python#Possible_Optimizations
         pkgs = import inputs.nixpkgs { inherit system; };
+        utilities = with pkgs; [
+          python3Packages.python-lsp-server
+          python3Packages.pylsp-rope
+          python3Packages.python-lsp-ruff
+        ];
       in
       {
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            python3Packages.python-lsp-server
-            python3Packages.pylsp-rope
-            python3Packages.python-lsp-ruff
-          ];
-        };
+        devShells =
+          let
+            util = pkgs.mkShell { packages = utilities; };
+            battery = pkgs.mkShell { packages = utilities; };
+            chain = pkgs.mkShell { };
+          in
+          {
+            inherit battery chain util;
+            default = chain;
+          };
       }
     );
 }

@@ -90,27 +90,30 @@ struct Args {
 
 #[derive(Subcommand)]
 enum NoxCommands {
-    /// Enter a development shell of chosen language with utilities
+    /// Enter a development shell of language, This command only works on Unix
     #[command(arg_required_else_help = true, short_flag = 'D')]
     Develop {
+        /// Programming Language being targetted for development
         #[arg(value_enum, required = true)]
         language: Language,
 
+        /// Include the language build chain?
         #[arg(action = ArgAction::SetTrue, short = 'c')]
         chain: bool,
 
+        /// Include utilities that help with development?
         #[arg(action = ArgAction::SetTrue, short = 'u')]
         utilities: bool,
     },
 
     /// Initialise directory with template files
-    #[command(arg_required_else_help = true)]
+    #[command(arg_required_else_help = true, short_flag = 'I')]
     Init {
         #[arg(value_enum)]
         language: Language,
     },
     /// Build application
-    #[command(arg_required_else_help = true)]
+    #[command(arg_required_else_help = true, short_flag = 'B')]
     Build {
         #[arg(value_enum)]
         language: Language,
