@@ -68,6 +68,10 @@
           path = ./rust;
           description = "Rust Environment";
         };
+        python = {
+          path = ./python;
+          description = "Python Environment via Poetry";
+        };
       };
     };
 }
