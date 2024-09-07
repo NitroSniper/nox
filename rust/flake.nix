@@ -52,12 +52,13 @@
         # all of that work (e.g. via cachix) when running in CI
 
         cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+        bin = craneLib.buildPackage (commonArgs // { inherit cargoArtifacts; });
       in
       {
         packages = {
           # Build the binary itself, reusing the dependency
           # artifacts from above.
-          default = craneLib.buildPackage (commonArgs // { inherit cargoArtifacts; });
+          default = bin;
         };
         devShells =
           let

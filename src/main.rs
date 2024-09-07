@@ -35,7 +35,7 @@ impl DevShellOption {
             (true, false) => Self::Chain,
             (false, true) => Self::Utility,
             // Default case
-            (false, false) => Self::Chain,
+            (false, false) => Self::Battery,
         }
     }
     fn get_flake_option(&self) -> &str {
