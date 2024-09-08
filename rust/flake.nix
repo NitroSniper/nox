@@ -53,11 +53,19 @@
 
         cargoArtifacts = craneLib.buildDepsOnly commonArgs;
         bin = craneLib.buildPackage (commonArgs // { inherit cargoArtifacts; });
+
+        docker = pkgs.dockerTools.buildImage {
+          name = "nox";
+          # tag = "latest";
+          # TODO! replace foo with package name
+          config.Cmd = [ "${bin}/bin/foo" ];
+        };
       in
       {
         packages = {
           # Build the binary itself, reusing the dependency
           # artifacts from above.
+          inherit docker;
           default = bin;
         };
         devShells =
@@ -68,7 +76,7 @@
           in
           {
             inherit battery chain util;
-            default = chain;
+            default = battery;
           };
 
       }
